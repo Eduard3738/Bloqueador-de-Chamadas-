@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Call Shield - Bloqueador Inteligente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(145deg, #e8edf2 0%, #dce2e8 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Container principal estilo card moderno */
+        .container {
+            width: 100%;
+            max-width: 520px;
+            background: #ffffff;
+            border-radius: 36px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 20px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Cabeçalho com gradiente suave */
+        .header {
+            background: linear-gradient(135deg, #1e2b3c 0%, #0f1a24 100%);
+            padding: 28px 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .header h1 span {
+            background: rgba(255,255,255,0.15);
+            padding: 6px 12px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: normal;
+        }
+
+        .subhead {
+            color: #bcd0df;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 6px;
+        }
+
+        /* Área de conteúdo */
+        .content {
+            padding: 28px 24px 32px;
+        }
+
+        /* Campo de input estilo moderno */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2c3e44;
+            margin-bottom: 8px;
+            letter-spacing: -0.2px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 4px 6px 4px 18px;
+            transition: all 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #3b82f6;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 14px 0;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #0f172a;
+            outline: none;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .btn-block {
+            background: #3b82f6;
+            border: none;
+            padding: 0 20px;
+            height: 52px;
+            border-radius: 18px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(59,130,246,0.2);
+        }
+
+        .btn-block:hover {
+            background: #2563eb;
+            transform: scale(0.98);
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+
+        .btn-block:active {
+            transform: scale(0.96);
+        }
+
+        /* Estatísticas e informações */
+        .stats-card {
+            background: #f1f5f9;
+            border-radius: 24px;
+            padding: 16px 20px;
+            margin: 24px 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stats-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            margin-top: 4px;
+        }
+
+        .stats-badge {
+            background: #e6f0ff;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        /* Lista de bloqueados */
+        .list-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 16px;
+        }
+
+        .list-title h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .clear-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+
+        .clear-btn:hover {
+            background: #fee2e2;
+        }
+
+        .blocked-list {
+            list-style: none;
+            margin-top: 8px;
+            max-height: 340px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .blocked-list li {
+            background: #ffffff;
+            border: 1px solid #eef2f6;
+            border-radius: 20px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        .blocked-list li:hover {
+            background: #fafcff;
+            border-color: #cbd5e1;
+            transform: translateX(2px);
+        }
+
+        .number-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .number-display {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0f172a;
+            letter-spacing: 0.3px;
+        }
+
+        .number-meta {
+            font-size: 0.7rem;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-blocked {
+            background: #fee2e2;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: #b91c1c;
+        }
+
+        .remove-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .remove-btn:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* empty state */
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            background: #fafcff;
+            border-radius: 28px;
+            margin-top: 12px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .empty-icon {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .empty-state p {
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .simulator-note {
+            margin-top: 28px;
+            background: #eef2ff;
+            border-radius: 20px;
+            padding: 14px 18px;
+            font-size: 0.75rem;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .simulator-note .icon {
+            font-size: 1.2rem;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 0.7rem;
+            color: #62748c;
+        }
+
+        /* scroll personalizada */
+        .blocked-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .blocked-list::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .blocked-list::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 20px 18px;
+            }
+            .input-wrapper {
+                flex-wrap: wrap;
+                background: transparent;
+                border: none;
+                padding: 0;
+                gap: 10px;
+            }
+            .input-wrapper input {
+                background: #f8fafc;
+                border: 1.5px solid #e2e8f0;
+                border-radius: 20px;
+                padding: 14px 18px;
+                width: 100%;
+            }
+            .btn-block {
+                width: 100%;
+                justify-content: center;
+            }
+            .stats-card {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>
+            📵 Call Shield
+            <span>Beta</span>
+        </h1>
+        <div class="subhead">Proteção contra spam e ligações indesejadas</div>
+    </div>
+
+    <div class="content">
+        <!-- Input moderno -->
+        <div class="input-group">
+            <label class="input-label">🔢 Número para bloquear</label>
+            <div class="input-wrapper">
+                <input type="tel" id="numeroInput" placeholder="Ex: +55 11 91234-5678 ou 11999999999" autocomplete="off">
+                <button class="btn-block" id="blockBtn" onclick="bloquearNumero()">
+                    ✋ Bloquear
+                </button>
+            </div>
+        </div>
+
+        <!-- Painel estatístico realista -->
+        <div class="stats-card">
+            <div class="stats-info">
+                <div class="stats-label">NÚMEROS BLOQUEADOS</div>
+                <div class="stats-number" id="contadorBloqueados">0</div>
+            </div>
+            <div class="stats-badge">
+                🛡️ Proteção ativa
+            </div>
+        </div>
+
+        <!-- Lista com cabeçalho e opção limpar -->
+        <div class="list-title">
+            <h3>📋 Lista de bloqueio</h3>
+            <button class="clear-btn" id="clearAllBtn" onclick="limparTodos()">Limpar tudo</button>
+        </div>
+
+        <ul class="blocked-list" id="listaBloqueados">
+            <!-- itens injetados via JS -->
+        </ul>
+
+        <!-- Simulação realista (explicação) -->
+        <div class="simulator-note">
+            <span class="icon">📱</span>
+            <div><strong>Modo simulação realista</strong><br>Para bloqueio real no Android/iOS, este app demonstrativo gerencia sua lista local. Integração futura com API do sistema.</div>
+        </div>
+        <div class="footer-note">
+            Números bloqueados são salvos no seu navegador • Sincronia local segura
+        </div>
+    </div>
+</div>
+
+<script>
+    // ================================
+    // Modelo de dados + localStorage persistente com timestamp e dados enriquecidos
+    // Versão realista: números bloqueados com objeto contendo número e data
+    // ================================
+    let bloqueados = [];  // array de objetos { numero, dataBloqueio, id }
+
+    // Carregar dados do localStorage com validação (migração de versão antiga)
+    function carregarDados() {
+        const stored = localStorage.getItem('callshield_bloqueados');
+        if(stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if(Array.isArray(parsed)) {
+                    // Verifica se é modelo antigo (array de strings) ou novo modelo (objetos)
+                    if(parsed.length > 0 && typeof parsed[0] === 'string') {
+                        // Migração: converter strings antigas para objetos
+                        bloqueados = parsed.map((num, idx) => ({
+                            id: Date.now() + idx,
+                            numero: formatarNumeroExibicao(num),
+                            numeroRaw: num,
+                            dataBloqueio: new Date().toLocaleDateString('pt-BR')
+                        }));
+                        salvarLista();
+                    } 
+                    else if(parsed.length > 0 && parsed[0] && typeof parsed[0] === 'object' && parsed[0].numeroRaw !== undefined) {
+                        bloqueados = parsed;
+                    }
+                    else if(parsed.length === 0) {
+                        bloqueados = [];
+                    }
+                    else {
+                        // fallback seguro: converte qualquer array estranho
+                        bloqueados = [];
+                    }
+                } else {
+                    bloqueados = [];
+                }
+            } catch(e) {
+                bloqueados = [];
+            }
+        } else {
+            // Dados iniciais de exemplo realistas (para demonstrar)
+            bloqueados = [
+                {
+                    id: 1001,
+                    numeroRaw: "11988887777",
+                    numero: "(11) 98888-7777",
+                    dataBloqueio: new Date(Date.now() - 86400000).toLocaleDateString('pt-BR')
+                },
+                {
+                    id: 1002,
+                    numeroRaw: "0800729000",
+                    numero: "0800 729 000",
+                    dataBloqueio: new Date(Date.now() - 172800000).toLocaleDateString('pt-BR')
+                },
+                {
+                    id: 1003,
+                    numeroRaw: "+5511912345678",
+                    numero: "+55 (11) 91234-5678",
+                    dataBloqueio: new Date().toLocaleDateString('pt-BR')
+                }
+            ];
+            salvarLista();
+        }
+        atualizarContador();
+    }
+
+    // Função auxiliar para formatar número de forma amigável
+    function formatarNumeroExibicao(numeroRaw) {
+        if(!numeroRaw) return "Número desconhecido";
+        let apenasDigitos = numeroRaw.replace(/\D/g, '');
+        if(apenasDigitos.length === 11 && (apenasDigitos.startsWith('11') || apenasDigitos.startsWith('21'))) {
+            // Brasileiro padrão: (XX) XXXXX-XXXX
+            return `(${apenasDigitos.substring(0,2)}) ${apenasDigitos.substring(2,7)}-${apenasDigitos.substring(7,11)}`;
+        }
+        else if(apenasDigitos.length === 10) {
+            return `(${apenasDigitos.substring(0,2)}) ${apenasDigitos.substring(2,6)}-${apenasDigitos.substring(6,10)}`;
+        }
+        else if(numeroRaw.startsWith('+')) {
+            // mantém formato internacional resumido
+            return numeroRaw.length > 15 ? numeroRaw.substring(0,14)+'...' : numeroRaw;
+        }
+        else {
+            return numeroRaw;
+        }
+    }
+
+    // Salvar no localStorage
+    function salvarLista() {
+        localStorage.setItem('callshield_bloqueados', JSON.stringify(bloqueados));
+        atualizarContador();
+    }
+
+    // Atualiza contador na stats-card
+    function atualizarContador() {
+        const contElem = document.getElementById('contadorBloqueados');
+        if(contElem) contElem.innerText = bloqueados.length;
+    }
+
+    // Renderizar a lista com visual mais rico (data, ícone)
+    function renderizarLista() {
+        const listaUl = document.getElementById('listaBloqueados');
+        if(!listaUl) return;
+
+        if(bloqueados.length === 0) {
+            listaUl.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <p>Nenhum número bloqueado ainda</p>
+                    <p style="font-size:0.7rem; margin-top:8px;">Adicione números indesejados acima</p>
+                </div>
+            `;
+            return;
+        }
+
+        listaUl.innerHTML = '';
+        // ordenar por data mais recente primeiro
+        const ordenados = [...bloqueados].reverse();
+        ordenados.forEach(item => {
+            const li = document.createElement('li');
+            const numeroExibicao = item.numero || formatarNumeroExibicao(item.numeroRaw);
+            const dataBlock = item.dataBloqueio || new Date().toLocaleDateString('pt-BR');
+            // identificador único para remoção
+            li.setAttribute('data-id', item.id);
+            li.innerHTML = `
+                <div class="number-info">
+                    <div class="number-display">${escapeHtml(numeroExibicao)}</div>
+                    <div class="number-meta">
+                        <span>🔒 Bloqueado em ${dataBlock}</span>
+                        <span class="badge-blocked">🚫 spam</span>
+                    </div>
+                </div>
+                <button class="remove-btn" onclick="removerNumeroPorId('${item.id}')">
+                    🗑️ Remover
+                </button>
+            `;
+            listaUl.appendChild(li);
+        });
+    }
+
+    // pequeno helper para evitar XSS
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // Função para bloquear novo número com melhor validação
+    function bloquearNumero() {
+        const inputEl = document.getElementById('numeroInput');
+        let numeroRaw = inputEl.value.trim();
+        if(numeroRaw === "") {
+            alert("⚠️ Digite um número de telefone válido (ex: 11999999999)");
+            return;
+        }
+
+        // Normaliza: Remove caracteres especiais mantendo + e dígitos para comparação robusta
+        let numeroNormalizado = numeroRaw.replace(/[^\d+]/g, '');
+        if(numeroNormalizado === "") {
+            alert("❌ Número inválido. Use apenas dígitos, + ou espaços.");
+            return;
+        }
+
+        // Verifica duplicidade comparando o número raw normalizado (evita bloqueio duplicado)
+        const jaExiste = bloqueados.some(item => {
+            let rawExistente = item.numeroRaw ? item.numeroRaw.replace(/[^\d+]/g, '') : '';
+            return rawExistente === numeroNormalizado;
+        });
+        if(jaExiste) {
+            alert(`O número ${numeroRaw} já está na sua lista de bloqueio.`);
+            return;
+        }
+
+        // Gerar número amigável e salvar
+        const numeroFormatado = formatarNumeroExibicao(numeroRaw);
+        const hoje = new Date().toLocaleDateString('pt-BR');
+        const novoId = Date.now() + Math.floor(Math.random() * 10000);
+        const novoItem = {
+            id: novoId,
+            numeroRaw: numeroRaw,
+            numero: numeroFormatado,
+            dataBloqueio: hoje
+        };
+        bloqueados.push(novoItem);
+        salvarLista();
+        renderizarLista();
+        inputEl.value = '';
+        // feedback visual sutil
+        const btn = document.getElementById('blockBtn');
+        const originalText = btn.innerText;
+        btn.innerText = '✓ Bloqueado!';
+        setTimeout(() => { if(btn) btn.innerText = originalText; }, 800);
+    }
+
+    // Remover via ID (garante robustez)
+    window.removerNumeroPorId = function(id) {
+        // id pode vir como string ou number no DOM, converter
+        const idNumber = Number(id);
+        const index = bloqueados.findIndex(item => item.id === idNumber);
+        if(index !== -1) {
+            const numeroRemovido = bloqueados[index].numero || bloqueados[index].numeroRaw;
+            bloqueados.splice(index, 1);
+            salvarLista();
+            renderizarLista();
+            // Pequeno toast-like simulado
+            mostrarMensagemTemporaria(`🗑️ ${numeroRemovido} removido da lista`);
+        } else {
+            alert("Erro ao remover. Tente novamente.");
+        }
+    };
+
+    // Limpar todos os números bloqueados com confirmação
+    window.limparTodos = function() {
+        if(bloqueados.length === 0) {
+            alert("Nenhum número bloqueado para limpar.");
+            return;
+        }
+        const confirmacao = confirm(`Tem certeza que deseja desbloquear TODOS os ${bloqueados.length} números? O bloqueio será removido permanentemente.`);
+        if(confirmacao) {
+            bloqueados = [];
+            salvarLista();
+            renderizarLista();
+            mostrarMensagemTemporaria("✅ Lista de bloqueio totalmente limpa!");
+        }
+    };
+
+    // Função auxiliar para simular notificação simples (evita alert excessivo)
+    function mostrarMensagemTemporaria(mensagem) {
+        // criar elemento flutuante minimalista caso queira
+        const statsDiv = document.querySelector('.stats-card');
+        if(statsDiv) {
+            const oldMsg = document.getElementById('tempToast');
+            if(oldMsg) oldMsg.remove();
+            const toast = document.createElement('div');
+            toast.id = 'tempToast';
+            toast.innerText = mensagem;
+            toast.style.position = 'absolute';
+            toast.style.bottom = '20px';
+            toast.style.left = '50%';
+            toast.style.transform = 'translateX(-50%)';
+            toast.style.backgroundColor = '#1f2937';
+            toast.style.color = 'white';
+            toast.style.padding = '8px 18px';
+            toast.style.borderRadius = '40px';
+            toast.style.fontSize = '0.75rem';
+            toast.style.fontWeight = '500';
+            toast.style.zIndex = '999';
+            toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+            toast.style.pointerEvents = 'none';
+            document.body.appendChild(toast);
+            setTimeout(() => { if(toast) toast.remove(); }, 2000);
+        } else {
+            console.log(mensagem);
+        }
+    }
+
+    // Integração com Enter no campo de input (acessibilidade)
+    function setupEnterListener() {
+        const inputField = document.getElementById('numeroInput');
+        if(inputField) {
+            inputField.addEventListener('keypress', function(event) {
+                if(event.key === 'Enter') {
+                    event.preventDefault();
+                    bloquearNumero();
+                }
+            });
+        }
+    }
+
+    // Atualizar também após qualquer exclusão ou alteração, manter contador sincronizado
+    function init() {
+        carregarDados();
+        renderizarLista();
+        setupEnterListener();
+        // Evento para limpar tudo via botão já declarado no onclick global, mas garantir
+        const clearBtn = document.getElementById('clearAllBtn');
+        if(clearBtn && !clearBtn.hasListener) {
+            clearBtn.addEventListener('click', limparTodos);
+            clearBtn.hasListener = true;
+        }
+        const blockMainBtn = document.getElementById('blockBtn');
+        if(blockMainBtn && !blockMainBtn._listener) {
+            blockMainBtn.addEventListener('click', bloquearNumero);
+            blockMainBtn._listener = true;
+        }
+    }
+
+    // Iniciar aplicação com dados realistas e interface clara
+    init();
+</script>
+</body>
+</html>
